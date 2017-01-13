@@ -16,11 +16,35 @@ var requestHandler = function(request, response) {
     HINT: explore the request object and its properties 
     http://stackoverflow.com/questions/17251553/nodejs-request-object-documentation
    */
+  if (parsedUrl.pathname == '/listings') {
+    console.log(listingData);
+    response.end();
+  }
+  else {
+    response.writeHead(404, { 'Content-Type': 'text/plain' });
+    response.write('Bad gateway error')
+    response.end();
+  }
 };
+
+server = http.createServer(requestHandler);
 
 fs.readFile('listings.json', 'utf8', function(err, data) {
   /*
     This callback function should save the data in the listingData variable, 
     then start the server. 
    */
+  if (err) {
+      throw err;
+    }
+
+    /* tried parse and stringify; stringify gives all coordinate data that parse does not display
+       Neither will give me the whole document resulting in a error in the test.
+     */
+    listingData = JSON.stringify(data,null);
+
+    server.listen(port, function () {
+      //once the server is listening, this callback function is executed
+      console.log('Server listening on: localhost:' + port)
+    });
 });
